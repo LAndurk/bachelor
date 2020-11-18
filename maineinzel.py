@@ -16,4 +16,7 @@ if ergebnis == False:
 else:
     print("gut")
 
+print("git")
+print("git")
+
 cv2.waitKey(0)
