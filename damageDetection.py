@@ -27,21 +27,18 @@ def damageDetection(img):
 
             if len(approx) == 1:
                 continue
+            p1_x = approx[0, 0, 0]
+            p1_y = approx[0, 0, 1]
+            p2_x = approx[1, 0, 0]
+            p2_y = approx[1, 0, 1]
 
-            p1_w = approx[0, 0, 0]
-            p1_h = approx[0, 0, 1]
-            p2_w = approx[1, 0, 0]
-            p2_h = approx[1, 0, 1]
-
-            if (p1_w > 10 and p1_w < img.shape[1] - 10) and \
-                    (p1_h > 10 and p1_h < img.shape[0] - 10):
+            if (p1_x > 10 and p1_x < img.shape[1] - 10) and \
+                    (p1_y > 10 and p1_y < img.shape[0] - 10):
                 result = False
-                coordinates.insert(0, [p1_w, p1_h])
-            if (p2_w > 10 and p2_w < img.shape[1] - 10) and \
-                    (p2_h > 10 and p2_h < img.shape[0] - 10):
+                coordinates.insert(0, [p1_x, p1_y])
+            if (p2_x > 10 and p2_x < img.shape[1] - 10) and \
+                    (p2_y > 10 and p2_y < img.shape[0] - 10):
                 result = False
-                coordinates.insert(0, [p2_w, p2_h])
-
-    cv2.imshow("img", img)
+                coordinates.insert(0, [p2_x, p2_y])
 
     return result, img, coordinates
