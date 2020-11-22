@@ -1,5 +1,6 @@
 import cv2
 import ba7
+import damageDetection as dd
 import hilfsfunktionen as hf
 """"
 label = [False, False, False, False, False, False, False, False, False, False,
@@ -7,23 +8,22 @@ label = [False, False, False, False, False, False, False, False, False, False,
          False, True, False, True, False, False, False, True, False]
 """
 # linksoben(2), rechtsoben(1), rechtsunten(4)
-labelquadrant = [[False, False, False],
-                 [False, False, False],
-                 [True, True, False],
-                 [True, False, True],  # ~4-2?
-                 [False, False, True],
-                 [False, False, False],
-                 [False, False, False],
-                 [True, True, False],
-                 [True, True, False],
-                 [True, False, False],
-                 [True, True, True],
-                 [False, True, True]]  # 12
+label = [[False, False, False],
+         [False, False, False],
+         [True, True, False],
+         [True, False, True],  # ~4-2?
+         [False, False, True],
+         [False, False, False],
+         [False, False, False],
+         [True, True, False],
+         [True, True, False],
+         [True, False, False],
+         [True, True, True],
+         [False, True, True]]  # 12
 
-alle = len(labelquadrant)*3
-richtig = 0
-falschschlecht = 0
-# falschgut = 0
+all = len(label) * 3
+right = 0
+falsenegative = 0
 """" #Originalbild, nicht geviertelt
 for i in range(1,30):
     path = "Bilder/"
@@ -40,12 +40,11 @@ for i in range(1,30):
     ausgabe = ''.join([str(i), str(label[i-1]), str(ergebnis)])
     cv2.imshow(ausgabe, img)
 """
-for i in range(1, len(labelquadrant)+1):
-    path = "Bilder/"
+for i in range(1, len(label) + 1):
+    path = "Eingangsbilder/"
     path = ''.join([path, str(i), ".png"])
-
     if i == 2:
-        alle = alle-3
+        all = all - 3
         continue
 
     for quadrant in [2, 1, 4]:
@@ -63,16 +62,17 @@ for i in range(1, len(labelquadrant)+1):
         img = cv2.resize(img, (x, y))
         img_quarter = hf.quarter(img, quadrant)
 
-        ergebnis, img, coordinates = ba7.damageDetection(img_quarter)
+        ergebnis, img, coordinates = dd.damageDetection(img_quarter)
 
-        if ergebnis == labelquadrant[i - 1][eintrag_labelquadrant]:
-            richtig = richtig + 1
+        if ergebnis == label[i - 1][eintrag_labelquadrant]:
+            right = right + 1
         else:
             ausgabe = ''.join([str(i), "-", str(quadrant),
-                               str(labelquadrant[i - 1][eintrag_labelquadrant]), str(ergebnis)])
+                               str(label[i - 1][eintrag_labelquadrant]),
+                               str(ergebnis)])
             cv2.imshow(ausgabe, img_quarter)
-            if labelquadrant[i - 1][eintrag_labelquadrant]:
-                falschschlecht = falschschlecht + 1
+            if label[i - 1][eintrag_labelquadrant]:
+                falsenegative = falsenegative + 1
             # else:
             #    falschgut = falschgut+1
 
@@ -105,18 +105,18 @@ for i in range(1, len(labelquadrant)+1):
     ausgabe = ''.join([str(i),"-4", str(labelquadrant[i - 1][2]), str(ergebnis4)])
     cv2.imshow(ausgabe, img4)
 """
-
+""""
 cv2.destroyWindow("threshold")
 cv2.destroyWindow("thresholdEro")
 cv2.destroyWindow("thresholdDil")
 cv2.destroyWindow("img")
+"""
 
-
-print("alle:", alle)
-print("richtig detektiert:", richtig)
-print("Prozent:", int(100 * richtig / alle), "%")
+print("all:", all)
+print("right:", right)
+print("test result:", int(100 * right / all), "%")
 print("________")
-print("falschgut:", alle-richtig-falschschlecht)
-print("falschschlecht (Pseudofehler):", falschschlecht)
+print("falsepositive:", all - right - falsenegative)
+print("falsenegative (Pseudofehler):", falsenegative)
 
 cv2.waitKey(0)
