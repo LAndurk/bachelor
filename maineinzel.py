@@ -2,7 +2,7 @@ import ba7
 import cv2
 import damageDetection as dd
 
-path="Eingangsbilder/12.png"
+path="Testbilder/2020-11-23_14-32-41.png"
 img = cv2.imread(path)
 x = int(img.shape[1] / 4)  # Breite
 y = int(img.shape[0] / 4)  # Höhe
