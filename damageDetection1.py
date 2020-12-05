@@ -22,11 +22,14 @@ def damageDetection(img):
     for cnt in contours:
         if cv2.contourArea(cnt) > 500:
 
+            cv2.drawContours(img, cnt, -1, (0, 255, 0), 3)
+
             peri = cv2.arcLength(cnt, True)
-            approx = cv2.approxPolyDP(cnt, 0.2 * peri, True)
+            approx = cv2.approxPolyDP(cnt, 0.2*peri, True)
 
             if len(approx) == 1:
                 continue
+            cv2.drawContours(img, [approx], -1, (255, 0, 0), 3)
             p1_x = approx[0, 0, 0]
             p1_y = approx[0, 0, 1]
             p2_x = approx[1, 0, 0]
