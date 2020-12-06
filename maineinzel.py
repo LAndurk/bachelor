@@ -1,17 +1,23 @@
 import ba7
 import cv2
+import damageDetection1 as dd1
 import damageDetection as dd
+import hilfsfunktionen as hf
+import numpy as np
 
-path="Testbilder/2020-11-23_14-32-41.png"
+substrate = "sandwich"
+picture = "7"
+
+path = ''.join([substrate, "/", picture, ".png"])
 img = cv2.imread(path)
-x = int(img.shape[1] / 4)  # Breite
-y = int(img.shape[0] / 4)  # Höhe
-img = cv2.resize(img,(x,y))
+
 #img = hf.quarter(img,1)
 #img = img[50:img.shape[0]-50,50:img.shape[1]-50]
-#print(img.shape)
 
-ergebnis,img,coordinates = ba7.damageDetection(img)
+ergebnis,img,coordinates = dd.damageDetection(img,substrate)
+
+hf.klein2("img",img)
+
 if ergebnis == False:
     print("!!!schlecht!!!")
 else:

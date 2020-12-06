@@ -7,15 +7,18 @@ def damageDetection(img):
     coordinates = []
 
     imgBW = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    imgThresh = cv2.adaptiveThreshold(imgBW, 255,
+#Blur
+    blur = cv2.GaussianBlur(imgBW,(1,1),0)
+#Threshold
+    imgThresh = cv2.adaptiveThreshold(blur, 255,
                                       cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                      cv2.THRESH_BINARY, 301, 0)
-
+                                      cv2.THRESH_BINARY, 501, 0)
+#Opening
     kernel = np.ones((7, 7), np.uint8)
     imgEro = cv2.erode(imgThresh, kernel, iterations=1)
     imgDil = cv2.dilate(imgEro, kernel, iterations=1)
-
+#Closing?
+#Contours
     contours, hierarchy = cv2.findContours(imgDil, cv2.RETR_EXTERNAL,
                                            cv2.CHAIN_APPROX_NONE)
 
@@ -29,7 +32,7 @@ def damageDetection(img):
 
             if len(approx) == 1:
                 continue
-            cv2.drawContours(img, [approx], -1, (255, 0, 0), 3)
+            #cv2.drawContours(img, [approx], -1, (255, 0, 0), 3)
             p1_x = approx[0, 0, 0]
             p1_y = approx[0, 0, 1]
             p2_x = approx[1, 0, 0]
