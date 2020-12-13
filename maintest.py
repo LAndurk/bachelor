@@ -1,6 +1,7 @@
 import cv2
 import ba7
-import damageDetection as dd
+import damageDetection1 as dd1
+import damageDetection as dd2
 import hilfsfunktionen as hf
 """"
 label = [False, False, False, False, False, False, False, False, False, False,
@@ -8,18 +9,24 @@ label = [False, False, False, False, False, False, False, False, False, False,
          False, True, False, True, False, False, False, True, False]
 """
 # linksoben(2), rechtsoben(1), rechtsunten(4)
+# streng
 label = [[False, False, False],
-         [False, False, False],
+         [False, False, False], #2
          [True, True, False],
-         [True, False, True],  # ~4-2?
-         [False, False, True],
+         [False, False, True],  # ~4-2?
+         [False, True, True],
+         [False, False, False], #6
          [False, False, False],
-         [False, False, False],
+         [True, True, False], #8
          [True, True, False],
-         [True, True, False],
-         [True, False, False],
+         [True, False, False], #10
          [True, True, True],
-         [False, True, True]]  # 12
+         [False, True, True], #12
+         [True,True,True],
+         [True,True,True], #14
+         [True,True,False],
+         [True,True,False], #16
+         [False,False,True]]
 
 all = len(label) * 3
 right = 0
@@ -62,7 +69,7 @@ for i in range(1, len(label) + 1):
         img = cv2.resize(img, (x, y))
         img_quarter = hf.quarter(img, quadrant)
 
-        ergebnis, img, coordinates = dd.damageDetection(img_quarter)
+        ergebnis, img, coordinates = dd2.damageDetection(img_quarter,"dunkel")
 
         if ergebnis == label[i - 1][eintrag_labelquadrant]:
             right = right + 1
@@ -70,7 +77,7 @@ for i in range(1, len(label) + 1):
             ausgabe = ''.join([str(i), "-", str(quadrant),
                                str(label[i - 1][eintrag_labelquadrant]),
                                str(ergebnis)])
-            cv2.imshow(ausgabe, img_quarter)
+            cv2.imshow(ausgabe, img)
             if label[i - 1][eintrag_labelquadrant]:
                 falsenegative = falsenegative + 1
             # else:

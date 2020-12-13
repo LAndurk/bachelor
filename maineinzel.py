@@ -5,8 +5,8 @@ import damageDetection as dd
 import hilfsfunktionen as hf
 import numpy as np
 
-substrate = "sandwich"
-picture = "7"
+substrate = "glas"
+picture = "1"
 
 path = ''.join([substrate, "/", picture, ".png"])
 img = cv2.imread(path)
@@ -16,7 +16,7 @@ img = cv2.imread(path)
 
 ergebnis,img,coordinates = dd.damageDetection(img,substrate)
 
-hf.klein2("img",img)
+hf.klein("img",img)
 
 if ergebnis == False:
     print("!!!schlecht!!!")

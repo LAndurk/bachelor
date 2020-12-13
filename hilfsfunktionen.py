@@ -1,17 +1,49 @@
 import cv2
 import numpy as np
 
+def klein(name,img):
+    x = int(img.shape[1] / 4)  # Breite
+    y = int(img.shape[0] / 4)  # Höhe
+    img = cv2.resize(img,(x,y))
+    cv2.imshow(name,img)
+
+def klein2(name,img):
+    x = int(img.shape[1] / 8)  # Breite
+    y = int(img.shape[0] / 8)  # Höhe
+    img = cv2.resize(img,(x,y))
+    cv2.imshow(name,img)
+
+def mask(img,size):
+    x = img.shape[1]  # Breite
+    y = img.shape[0]  # Höhe
+    mask = np.zeros((y,x), np.uint8) #1944, 2592
+    cv2.circle(mask, (int(x/ 2), int(y/ 2)), int(y/ 2) + size,
+               255, -1) # funktioniert für 1 Kanal und 3 Kanäle
+    img = cv2.bitwise_and(img,mask)
+    return img
+
+def mask3(img,size):
+    x = img.shape[1]  # Breite
+    y = img.shape[0]  # Höhe
+    mask = np.zeros((y,x,3), np.uint8) #1944, 2592
+    cv2.circle(mask, (int(x/ 2), int(y/ 2)), int(y/ 2) + size,
+               (255,255,255), -1) # funktioniert für 1 Kanal und 3 Kanäle
+    mask = cv2.bitwise_not(mask)
+    img = cv2.bitwise_or(img,mask)
+    klein("mask",mask)
+    return img
+
 def quarter(img,quadrant):
     x = img.shape[1]  # Breite
     y = img.shape[0]  # Höhe
     if quadrant == 1:
-        img = img[:int(y / 2) - 1,int(x / 2) + 1:]
+        img = img[:int(y / 2) - 10,int(x / 2) + 10:] #10 damit das ganze Kreuz verschwunden ist
     elif quadrant == 2:
-      img = img[:int(y / 2) - 1, :int(x / 2) - 1]
+      img = img[:int(y / 2) - 10, :int(x / 2) - 10]
     elif quadrant == 3:
-        img = img[int(y / 2) + 1:, :int(x / 2) - 1]
+        img = img[int(y / 2) + 10:, :int(x / 2) - 10]
     elif quadrant == 4:
-        img = img[int(y / 2) + 1:, int(x / 2) + 1:]
+        img = img[int(y / 2) + 10:, int(x / 2) + 10:]
 
     return img
 
