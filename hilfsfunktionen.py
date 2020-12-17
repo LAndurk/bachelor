@@ -1,15 +1,32 @@
 import cv2
 import numpy as np
 
-def klein(name,img):
+def show(name, img, scale):
+    x = int(img.shape[1] / scale)  # Breite
+    y = int(img.shape[0] / scale)  # Höhe
+    img = cv2.resize(img,(x,y))
+    cv2.imshow(name,img)
+    return img
+
+def show0(name, img):
+    cv2.imshow(name,img)
+
+def show1(name, img):
     x = int(img.shape[1] / 4)  # Breite
     y = int(img.shape[0] / 4)  # Höhe
     img = cv2.resize(img,(x,y))
     cv2.imshow(name,img)
+    return img
 
-def klein2(name,img):
+def show2(name, img):
     x = int(img.shape[1] / 8)  # Breite
     y = int(img.shape[0] / 8)  # Höhe
+    img = cv2.resize(img,(x,y))
+    cv2.imshow(name,img)
+
+def show3(name, img):
+    x = int(img.shape[1] / 20)  # Breite
+    y = int(img.shape[0] / 20)  # Höhe
     img = cv2.resize(img,(x,y))
     cv2.imshow(name,img)
 
@@ -30,7 +47,7 @@ def mask3(img,size):
                (255,255,255), -1) # funktioniert für 1 Kanal und 3 Kanäle
     mask = cv2.bitwise_not(mask)
     img = cv2.bitwise_or(img,mask)
-    klein("mask",mask)
+    show1("mask", mask)
     return img
 
 def quarter(img,quadrant):
@@ -80,6 +97,15 @@ def stackImages(scale,imgArray):
 
 """"
 archivierter Code
+"""
+
+"""
+# ausgabe dd
+black = np.zeros((img.shape[0],img.shape[1]), np.uint8)
+numpy_horizontal_concat = np.concatenate((gray, blur, threshold), axis=1)
+numpy_horizontal_concat2 = np.concatenate((opening, closing, black), axis=1)
+numpy_vertical_concat = np.concatenate((numpy_horizontal_concat,numpy_horizontal_concat2), axis=0)
+hf.show1("kombi", numpy_vertical_concat)
 """
 
 """"#globales threshold preprocessing
