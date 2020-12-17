@@ -2,15 +2,28 @@ import cv2
 import numpy as np
 import hilfsfunktionen as hf
 
-# gauss, threshold, opening, closing, cut, Konturengröße
-parameters = [[1,   501,    15, 1,  50,     2000], #dunkel
-              [25,  1501,   32, 32, 100,    7000], #sandwich
-              [1,   251,    31, 1,  200,    7000], #glas
-              [51,  201,    21, 21, 100,    7000]] #sandwich2
 
 substrates = {"dunkel":0,"sandwich":1,"glas":2,"sandwich2":3}
 
 def damageDetection(img, substrate):
+
+    pixels = img.shape[0] * img.shape[1]
+    print(pixels)
+    scale = pixels / 5000000
+    print(scale)
+    scale = 1
+
+    # gauss, threshold, opening, closing, cut, Konturengröße
+    parameters = np.array([[1, 501, 15, 1, 50, 2000],  # dunkel
+                           [25, 1501, 31, 31, 0, 7000],  # sandwich
+                           [1, 251, 31, 1, 200, 7000],  # glas
+                           [1, 1001, 1, 1, 0, 7000]])  # sandwich2
+
+    parameters = scale * parameters
+    parameters = parameters.astype(int)
+    parameters = [i - (i % 2) + 1 for i in parameters] #change even numbers to odd numbers
+    print(parameters)
+
     index = substrates[substrate]
 
     result = True
@@ -19,16 +32,16 @@ def damageDetection(img, substrate):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 #Blur
     blur = cv2.GaussianBlur(gray, (parameters[index][0],parameters[index][0]), 0)
-    cv2.imwrite("Zwischenergebnisbilder/blurred.png",blur)
 #Threshold
     if substrate == "glas":
         thresh_type = cv2.THRESH_BINARY_INV
+        blur = cv2.bitwise_not(blur) # für absoluten threshold, weil otsu nicht invers geht
     else:
         thresh_type = cv2.THRESH_BINARY
     threshold = cv2.adaptiveThreshold(blur, 255,
                                       cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                       thresh_type, parameters[index][1], 0)
-    #ret,threshold2 = cv2.threshold(blur,0,255,cv2.THRESH_OTSU)
+    #ret,threshold = cv2.threshold(blur,0,255,cv2.THRESH_OTSU)
     #blended = cv2.addWeighted(src1=threshold1, alpha=0.7, src2=threshold2, beta=0.3, gamma=0)
 #Opening
     kernelo = np.ones((parameters[index][2],parameters[index][2]), np.uint8)
@@ -55,7 +68,7 @@ def damageDetection(img, substrate):
 
             if len(approx) == 1:
                 continue
-            cv2.drawContours(img, [approx], -1, (255, 0, 0), 3)
+            #cv2.drawContours(img, [approx], -1, (255, 0, 0), 3)
             p1_x = approx[0, 0, 0]
             p1_y = approx[0, 0, 1]
             p2_x = approx[1, 0, 0]
@@ -70,9 +83,10 @@ def damageDetection(img, substrate):
                 result = False
                 coordinates.insert(0, [p2_x, p2_y])
     #show pictures
-    numpy_horizontal_concat = np.concatenate((gray, blur, threshold), axis=1)
-    numpy_horizontal_concat2 = np.concatenate((opening, closing, np.zeros((img.shape[0],img.shape[1]), np.uint8)), axis=1)
-    numpy_vertical_concat = np.concatenate((numpy_horizontal_concat,numpy_horizontal_concat2), axis=0)
-    hf.klein2("kombi", numpy_vertical_concat)
+    black = np.zeros((img.shape[0],img.shape[1]), np.uint8)
+    numpy_horizontal_concat = np.concatenate((blur, threshold, opening, closing), axis=1)
+    #numpy_horizontal_concat2 = np.concatenate((opening, closing, black), axis=1)
+    #numpy_vertical_concat = np.concatenate((numpy_horizontal_concat,numpy_horizontal_concat2), axis=0)
+    hf.show("kombi", numpy_horizontal_concat,8)
 
     return result, img, coordinates

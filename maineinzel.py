@@ -5,18 +5,19 @@ import damageDetection as dd
 import hilfsfunktionen as hf
 import numpy as np
 
-substrate = "glas"
-picture = "1"
+substrate = "lichtmikroskop"
+picture = "dick gut"
 
 path = ''.join([substrate, "/", picture, ".png"])
 img = cv2.imread(path)
 
+#img = hf.show("eingabe", img,2)
 #img = hf.quarter(img,1)
 #img = img[50:img.shape[0]-50,50:img.shape[1]-50]
 
-ergebnis,img,coordinates = dd.damageDetection(img,substrate)
+ergebnis,img,coordinates = dd.damageDetection(img,"sandwich")
 
-hf.klein("img",img)
+hf.show("maineinzel", img,8)
 
 if ergebnis == False:
     print("!!!schlecht!!!")
