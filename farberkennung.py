@@ -1,10 +1,11 @@
 import cv2
 import numpy as np
+import  hilfsfunktionen as hf
 
 def empty(a):
     pass
 
-path = "Bilder/lambo.jpg"
+path = "heute/Scan.png"
 
 cv2.namedWindow("TrackBars") #Neues Fenster anlegen und Ziehregler hinzufügen
 cv2.resizeWindow("TrackBars",640,240)
@@ -17,7 +18,7 @@ cv2.createTrackbar("Val Max","TrackBars",255,255,empty)
 
 while True:
     img = cv2.imread(path)
-    img = cv2.resize(img,(300,300))
+    img = hf.show("input",img,16)
 
     imgHSV = cv2.cvtColor(img,cv2.COLOR_BGR2HSV) #HSV Bild erstellen
     h_min = cv2.getTrackbarPos("Hue Min","TrackBars") #Ziehreglerpositionen einlesen

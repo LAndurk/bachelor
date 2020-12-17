@@ -5,8 +5,8 @@ import damageDetection as dd
 import hilfsfunktionen as hf
 import numpy as np
 
-substrate = "lichtmikroskop"
-picture = "dick gut"
+substrate = "heute"
+picture = "2020-12-14_13-41-55"
 
 path = ''.join([substrate, "/", picture, ".png"])
 img = cv2.imread(path)
